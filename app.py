@@ -176,25 +176,28 @@ class CustomRetriever(BaseRetriever):
         return self.hybrid_retriever.get_relevant_documents(query)
 
 
-# 初始化检索系统
 def initialize_retrieval_system():
     """初始化混合检索系统"""
     try:
-        # 使用相对路径，确保文件在根目录
         pdf_filename = "TanYu_PM.pdf"
         if not os.path.exists(pdf_filename):
             raise FileNotFoundError(f"PDF文件 {pdf_filename} 不存在")
-        
-        # 修改向量存储目录为临时目录
-        vector_store_path = "/tmp/vector_store"  # Render 的临时目录
+
+        # 提取和分割文本
+        text = extract_text_from_pdf(pdf_filename)
+        split_docs = load_split_docs(text)
+
+        # 修改向量存储目录为临时目录以适应 Render
+        vector_store_path = "/tmp/vector_store"
         os.makedirs(vector_store_path, exist_ok=True)
-        
-        # 在 Chroma 初始化中使用临时目录
+
+        # 初始化向量检索
         vectorstore = Chroma.from_documents(
             documents=split_docs,
             embedding=embeddings_model,
             persist_directory=vector_store_path
         )
+
         # 创建向量检索器
         vector_retriever = VectorRetriever(vectorstore)
 
@@ -298,3 +301,4 @@ if __name__ == "__main__":
 
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
