@@ -1,0 +1,12 @@
+-i https://pypi.tuna.tsinghua.edu.cn/simple
+fastapi
+uvicorn
+pypdf
+protobuf==5.26.1
+langchain
+langchain-community
+langchain-text-splitters
+chromadb
+sentence-transformers
+langchain-openai
+dashscope
